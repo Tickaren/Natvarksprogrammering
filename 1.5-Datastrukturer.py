@@ -46,16 +46,29 @@
 # a = set('Hej jag heter Oscar!')
 # print (a)
 
-def f(a):
-    for i in a:
-        print(i, a[i], end=' : ')
-    print()
 
-def func2(it):
-    for i, s in it.items():
-        print(i,s, end=' : ')
-    print()
+# 1.5.4 Looping Techniques
 
-lista = {"uh": 2323, "ah": 2424, "Oscar": 2525, "Japp":8989, "Nätverk" : 6767}
-f(lista)
-func2(lista)
+# def f(a):
+#     for i in a:
+#         print(i, a[i], end=' : ')
+#     print()
+#
+# def func2(it):
+#     for i, s in it.items():
+#         print(i,s, end=' : ')
+#     print()
+#
+# lista = {"uh": 2323, "ah": 2424, "Oscar": 2525, "Japp":8989, "Nätverk" : 6767}
+# f(lista)
+# func2(lista)
+
+# 1.5.5 Kontrollfrågor på More on Conditions
+def fname(age):
+    if 20 <= age and age <= 65:
+        print("Vad jobbar du med?")
+    else:
+        print("Gå och lägg dig!")
+
+fname(32)
+fname(10)
