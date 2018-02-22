@@ -51,7 +51,6 @@ class CardDeck:
 
 deck = CardDeck()
 deck.shuffle()
-print(deck.size())
 while deck.size()>0:
     card = deck.getCard()
     print("Kortet {} har {}".format ( card, card.getValue()))
