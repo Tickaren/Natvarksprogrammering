@@ -8,6 +8,7 @@ with open('score2.txt') as f:
             totalscores[name] = int(a[4])
         else:
             totalscores[name] = totalscores[name] + int(a[4])
+    f.closed
 # Sortering:
 sortedscores = sorted(totalscores, key=totalscores.get, reverse=True)
 
@@ -16,5 +17,3 @@ for i in sortedscores:
     print(i, totalscores[i])
     numb = numb +1
     if numb > 5: break
-#Stänger filen
-f.closed
