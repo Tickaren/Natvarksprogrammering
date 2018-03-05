@@ -1,27 +1,30 @@
 import socketserver
 
-class MyTCPHandler(socketserver.BaseRequestHandler):
-    """
-    The request handler class for our server.
-
-    It is instantiated once per connection to the server, and must
-    override the handle() method to implement communication to the
-    client.
-    """
-
+class TCPHandler(socketserver.BaseRequestHandler):
     def handle(self):
         # self.request is the TCP socket connected to the client
         self.data = self.request.recv(1024).strip()
         print ("{} wrote:".format(self.client_address[0]))
         print (self.data.decode("ascii"))
-        # just send back the same data, but upper-cased
-        self.request.sendall(self.data.upper())
+
+        # Sends the request back to the klient:
+        self.request.sendall(bytearray("HTTP/1.1 200 ok\n", "ASCII"))
+        self.request.sendall(bytearray("\n", "ASCII"))
+        self.request.sendall(bytearray("<html>\n", "ASCII"))
+        self.request.sendall(bytearray("<h1>Din request</h1>\n", "ASCII"))
+        self.request.sendall(bytearray(
+        "<p>Din klient skickade denna request:</p>\n", "ASCII"))
+        self.request.sendall(bytearray("<pre>", "ASCII"))
+        self.request.sendall(bytearray(self.data.decode("ascii"), "ASCII"))
+        self.request.sendall(bytearray("</pre>", "ASCII"))
+        self.request.sendall(bytearray("</html>\n", "ASCII"))
+
 
 if __name__ == "__main__":
     HOST, PORT = "localhost", 9999
 
     # Create the server, binding to localhost on port 9999
-    server = socketserver.TCPServer((HOST, PORT), MyTCPHandler)
+    server = socketserver.TCPServer((HOST, PORT), TCPHandler)
 
     # Activate the server; this will keep running until you
     # interrupt the program with Ctrl-C
