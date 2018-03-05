@@ -17,7 +17,8 @@ def server():
     # Create a socket object
     s = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
     host = socket.gethostname() # Get local machine name
-    port = 12345                # Reserve a port for your service.
+    print (host)
+    port = 60003                # Reserve a port for your service.
     s.bind((host, port))        # Bind to the port
 
     serverscore, clientscore = 0,0
@@ -25,57 +26,55 @@ def server():
     s.listen(5)                 # Now wait for client connection.
     while True:
         print("Listening...")
-        c, addr = s.accept()    # Establish connection with client.
+        client, addr = s.accept()    # Establish connection with client.
         print ("Got connecttion from", addr)
-
+        print ("If you want to quit type quit")
         while True:
             serverPlay = input("Rock, Paper, Scissors? (O,U,X) ").upper()
+            if "QUIT" in serverPlay:
+                break
             while serverPlay not in gameList:
                 serverPlay = input("Try again! Rock, Paper, Scissors? (O,U,X) ").upper()
 
-            data = c.recv(1024) # Expected data drom client
+            data = client.recv(1024) # Expected data drom client
             if not data:
                 break           # If no data break
 
             clientPlay = data.decode('ascii')
-            if clientPlay not in gameList:
-                print ("Something went wrong! ")
-                break
-
             answer = checkWinner(serverPlay, clientPlay)
             if "Server" in answer:
                 serverscore += 1
             elif "Client" in answer:
                 clientscore += 1
 
+            # Skriver ut vad båda spelarna har spelat
             answer += (" Server played {}, Client played {}".format(serverPlay, clientPlay))
-            clientAnswer = answer
-            serverAnswer = answer
-            if clientscore >= 10:
-                clientAnswer += "You won! {} to {}".format(clientscore, serverscore)
-                serverAnswer += "You lost! {} to {}".format(serverscore, clientscore)
+            # Skriver ut spelomgången:
+            clientAnswer, serverAnswer = gamePrint(answer, serverscore, clientscore)
+            #Nollställer om någon av spelarna vunnit:
+            if serverscore >= 10 or clientscore >= 10:
+                serverscore, clientscore = 0,0
 
-            elif serverscore >= 10:
-                clientAnswer += "You lost! {} to {}".format(clientscore, serverscore)
-                serverAnswer += "You won! {} to {}".format(serverscore, clientscore)
-
-            else:
-                clientAnswer += "\nServer score: {}, Client score: {}".format(serverscore, clientscore)
-                serverAnswer += "\nServer score: {}, Client score: {}".format(serverscore, clientscore)
-            c.send(bytearray(clientAnswer,"ASCII"))  # Send data to client
+            # Skickar omgången till klienten
+            client.send(bytearray(clientAnswer,"ASCII"))  # Send data to client
             print (serverAnswer)
 
-        c.close()               # Close the connection
+        client.close()               # Close the connection
         print ('client {} disconnected'.format(addr))
 
 
 def client():
     s = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
+    # host = input("Type hostname/ip: ")
     host = socket.gethostname()
-    port = 12345
+    # port = input ("Type Portnr: ")
+    port = 60003
     s.connect((host, port)) # Connect to server
+    print ("If you want to quit type quit")
     while True:
         play = input("Rock, Paper, Scissors? (O,U,X)").upper()
+        if "QUIT" in play:
+            break
         while play not in gameList:
             play = input("Try again! Rock, Paper, Scissors? (O,U,X)").upper()
 
@@ -105,5 +104,22 @@ def checkWinner(Server, Client):
             return "Client wins!"
         else:
             return "Server wins!"
+
+def gamePrint (answer, serverscore, clientscore):
+    clientAnswer, serverAnswer = answer, answer
+    if clientscore >= 10:
+        clientAnswer = "You won! {} to {}".format(clientscore, serverscore)
+        serverAnswer = "You lost! {} to {}".format(serverscore, clientscore)
+
+    elif serverscore >= 10:
+        clientAnswer += "You lost! {} to {}".format(clientscore, serverscore)
+        serverAnswer += "You won! {} to {}".format(serverscore, clientscore)
+
+    else:
+        clientAnswer += "\nServer score: {}, Client score: {}".format(serverscore, clientscore)
+        serverAnswer += "\nServer score: {}, Client score: {}".format(serverscore, clientscore)
+
+    return clientAnswer, serverAnswer
+
 
 start()
