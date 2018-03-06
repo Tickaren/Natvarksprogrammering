@@ -1,6 +1,7 @@
 import socket
 import select
 
+# Sends data to all klients in listOfSockets
 def broadcast(sock, message):
     for s in listOfSockets:
         if s is not server_socket and s is not sock:
@@ -25,26 +26,19 @@ while True:
     tup = select.select(listOfSockets, [], [])
     sock = tup[0][0]
 
+    # If new client:
     if sock == server_socket:
         Sockclient, addr = server_socket.accept()
         print ("New connection from:", addr)
-        # TODO ny klient ansluter sig.
-        # anropa (Sockclient, addr) = sockL.accept() och ta hand om den nya klienten
-        # stoppa in klientens socket i socketlist
         listOfSockets.append(Sockclient)
         broadcast(Sockclient, "{} (Connected)".format(addr))
     else:
-        # Befintlig klient skickar data eller kopplar ner
+        # Existing client that sends message or disconects!
         data = sock.recv(2048)
-        if not data:
+        if not data: # disconnected client
             broadcast(sock, "{} (Nedkopplad)".format(addr))
             print("klient ({}) är offline".format(addr))
             sock.close()
             listOfSockets.remove(sock)
-            # TODO hantera nedkoppling från sock
-            # Stäng socketförbindelsen och ta bort sock från listan
-        else:
+        else: # Recived message from client
             broadcast(sock, "\r" + "<" + str(sock.getpeername()) + ">" + data.decode("ASCII"))
-            print("<" + str(sock.getpeername()) + ">" + data.decode("ASCII"))
-            # TODO data är ett meddelande från klienten
-            # skicka detta till alla klienter
