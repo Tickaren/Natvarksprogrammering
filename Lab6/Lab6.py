@@ -20,12 +20,13 @@ class TCPHandler(socketserver.BaseRequestHandler):
         self.request.sendall(bytearray("</html>\n", "ASCII"))
 
 
-if __name__ == "__main__":
+def startServer():
     HOST, PORT = "localhost", 9999
 
     # Create the server, binding to localhost on port 9999
     server = socketserver.TCPServer((HOST, PORT), TCPHandler)
 
     # Activate the server; this will keep running until you
-    # interrupt the program with Ctrl-C
     server.serve_forever()
+
+startServer()

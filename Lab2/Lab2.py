@@ -12,8 +12,9 @@ with open('score2.txt') as f:
 # Sortering:
 sortedscores = sorted(totalscores, key=totalscores.get, reverse=True)
 
-numb = 0
+highscore = sortedscores[0]
 for i in sortedscores:
-    print(i, totalscores[i])
-    numb = numb +1
-    if numb > 5: break
+    if totalscores[i] == totalscores[highscore]:
+        print(i, totalscores[i])
+    else:
+        break
