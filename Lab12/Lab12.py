@@ -14,4 +14,4 @@ for i in regg:
     avsnitttotal = ''.join(re.findall(r'av\s*(\d+)', str(i)))
     print("Avsnitt:  ", avsnittnr, "/", avsnitttotal)
 
-    print("Handling: ",''.join(re.findall(r"av\s*\d+\.\s*(\w+.*)\s*'", str(i))))
+    print("Handling: ",''.join(re.findall(r'av\s*\d+\.\s*(\w+.*)\s*Simpsons', str(i))))
