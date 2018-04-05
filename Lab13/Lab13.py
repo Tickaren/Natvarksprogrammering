@@ -26,16 +26,19 @@ with open('score2.txt') as f:
 
 conn.commit()
 
+# S
 c.execute('SELECT name1, name2, SUM(score) FROM persons JOIN scores ON persons.id = scores.id GROUP BY persons.id ORDER BY SUM(score) DESC LIMIT 10')
 topscores = c.fetchall()
 print("Top scores:")
 for i in topscores:
     print(i[0], " ", i[1], " ", i[2])
 
+# Skriva ut de svåraste uppgifterna:
 c.execute('SELECT upgnr, SUM(score) FROM scores GROUP BY upgnr ORDER BY SUM(score) ASC LIMIT 10')
 topupg = c.fetchall()
 print()
 print("Hardest upg:")
 for i in topupg:
     print("Upg: ", i[0], " score: ", i[1])
+
 conn.close()
